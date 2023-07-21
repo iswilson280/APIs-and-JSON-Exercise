@@ -13,10 +13,10 @@ namespace APIsAndJSON
     {
         static async Task Main(string[] args)
         {
-            string apiKey = "0c11fa9e259068decee4c0b60db0b2d3";
-            string city = "Houston"; // Change this to your desired city
+            string apiKey = "4009242f8b913393abeec177a725f48b";
+            string city = "London";
 
-            string apiUrl = $"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}&units=imperial";
+            string apiUrl = $"http://api.openweathermap.org/data/2.5/weather?q=London,uk&APPID=4009242f8b913393abeec177a725f48b";
 
             using var httpClient = new HttpClient();
 
@@ -25,7 +25,7 @@ namespace APIsAndJSON
                 var response = await httpClient.GetStringAsync(apiUrl);
                 var weatherData = JObject.Parse(response);
 
-                var cityName = weatherData["name"];
+                var cityName = weatherData["London"];
                 var description = weatherData["weather"][0]["description."];
                 var temperature = weatherData["main"]["temp"];
 
