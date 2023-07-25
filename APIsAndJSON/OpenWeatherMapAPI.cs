@@ -5,39 +5,53 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Newtonsoft.Json.Linq;
+using Microsoft.Extensions.Configuration;
+using System.Net.Http;
+using System.Numerics;
+using System.Text.RegularExpressions;
 
 namespace APIsAndJSON
 {
     public class OpenWeatherMapAPI
-    
     {
-        static async Task Main(string[] args)
+        public static void WeatherMapAPI()
         {
-            string apiKey = "4009242f8b913393abeec177a725f48b";
-            string city = "London";
+            IConfiguration config = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json")
+            .Build();
 
-            string apiUrl = $"http://api.openweathermap.org/data/2.5/weather?q=London,uk&APPID=4009242f8b913393abeec177a725f48b";
+            //IConfigurationRoot configuration = builder.Build();
+            string apiKey = config.GetSection("AppSettings")["ApiKey"];
 
-            using var httpClient = new HttpClient();
+            Console.WriteLine("Enter City");
+            var cityInput = Console.ReadLine();
 
-            try
-            {
-                var response = await httpClient.GetStringAsync(apiUrl);
-                var weatherData = JObject.Parse(response);
+            string apiUrl = $"http://api.openweathermap.org/data/2.5/weather?q={cityInput}&appid={apiKey}&units=imperial";
 
-                var cityName = weatherData["London"];
-                var description = weatherData["weather"][0]["description."];
-                var temperature = weatherData["main"]["temp"];
+            var httpClient = new HttpClient();
 
-                Console.WriteLine($"Current Weather in {cityName}:");
-                Console.WriteLine($"Description: {description}");
-                Console.WriteLine($"Temperature: {temperature} °F");
-            }
-            catch (HttpRequestException ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-            }
+
+
+            var response = httpClient.GetStringAsync(apiUrl).Result;
+            var weatherData = JObject.Parse(response);
+
+            Console.WriteLine($" Weather in {cityInput} is {weatherData["main"]["temp"] }");
+
+
         }
     }
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
